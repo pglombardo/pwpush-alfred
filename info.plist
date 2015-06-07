@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bundleid</key>
+	<string>com.pglombardo.pwpush</string>
+	<key>category</key>
+	<string>Internet</string>
+	<key>connections</key>
+	<dict>
+		<key>04B2B610-68B7-4422-A68E-E160D2A3EEED</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>BF823619-F32E-47B5-871F-A94C9135795E</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+		</array>
+		<key>BF823619-F32E-47B5-871F-A94C9135795E</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>4DDDD1DD-960C-4FC7-A98F-BB256449CEC9</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>7172DED4-57FD-4204-8226-F833F718CD3D</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>6426AAB0-099B-473A-9BEE-C2E5C29C36FF</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+		</array>
+	</dict>
+	<key>createdby</key>
+	<string>Peter Giacomo Lombardo</string>
+	<key>description</key>
+	<string>Push passwords to pwpush.com</string>
+	<key>disabled</key>
+	<false/>
+	<key>name</key>
+	<string>PasswordPusher</string>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>autopaste</key>
+				<false/>
+				<key>clipboardtext</key>
+				<string>https://pwpush.com/p/{query}</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.clipboard</string>
+			<key>uid</key>
+			<string>4DDDD1DD-960C-4FC7-A98F-BB256449CEC9</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>script</key>
+				<string>open https://pwpush.com/p/{query}</string>
+				<key>type</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.script</string>
+			<key>uid</key>
+			<string>7172DED4-57FD-4204-8226-F833F718CD3D</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>script</key>
+				<string>#!/usr/bin/env ruby
+
+require "net/http"
+require "uri"
+require "json"
+
+uri = URI.parse("https://pwpush.com/p.json")
+
+r = Net::HTTP.post_form(uri, {"password[payload]" =&gt; "{query}"})
+puts JSON.parse(r.body)["url_token"]
+</string>
+				<key>type</key>
+				<integer>2</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>BF823619-F32E-47B5-871F-A94C9135795E</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>keyword</key>
+				<string>pwp</string>
+				<key>subtext</key>
+				<string>Push a password</string>
+				<key>text</key>
+				<string>PasswordPusher</string>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.keyword</string>
+			<key>uid</key>
+			<string>04B2B610-68B7-4422-A68E-E160D2A3EEED</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>lastpathcomponent</key>
+				<false/>
+				<key>onlyshowifquerypopulated</key>
+				<false/>
+				<key>output</key>
+				<integer>0</integer>
+				<key>removeextension</key>
+				<false/>
+				<key>sticky</key>
+				<false/>
+				<key>text</key>
+				<string>Link copied to clipboard.</string>
+				<key>title</key>
+				<string>PasswordPusher</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.notification</string>
+			<key>uid</key>
+			<string>6426AAB0-099B-473A-9BEE-C2E5C29C36FF</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+	</array>
+	<key>readme</key>
+	<string>Alfred Workflow for PasswordPusher
+
+https://pwpush.com/
+https://github.com/pglombardo/pwpush-alfred
+
+————————————————————————
+Idea for this by https://github.com/psteinweber</string>
+	<key>uidata</key>
+	<dict>
+		<key>04B2B610-68B7-4422-A68E-E160D2A3EEED</key>
+		<dict>
+			<key>ypos</key>
+			<real>210</real>
+		</dict>
+		<key>4DDDD1DD-960C-4FC7-A98F-BB256449CEC9</key>
+		<dict>
+			<key>ypos</key>
+			<real>10</real>
+		</dict>
+		<key>6426AAB0-099B-473A-9BEE-C2E5C29C36FF</key>
+		<dict>
+			<key>ypos</key>
+			<real>370</real>
+		</dict>
+		<key>7172DED4-57FD-4204-8226-F833F718CD3D</key>
+		<dict>
+			<key>ypos</key>
+			<real>210</real>
+		</dict>
+		<key>BF823619-F32E-47B5-871F-A94C9135795E</key>
+		<dict>
+			<key>ypos</key>
+			<real>210</real>
+		</dict>
+	</dict>
+	<key>webaddress</key>
+	<string>https://pwpush.com</string>
+</dict>
+</plist>
