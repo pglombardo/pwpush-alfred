@@ -4,3 +4,5 @@
 An Alfred workflow to push passwords to [pwpush.com](https://pwpush.com/).
 
 ![](https://disznc.s3.amazonaws.com/pwpush-alfred.png)
+
+This workflow is posted on and also available on [Packal.org](http://www.packal.org/workflow/passwordpusher).
