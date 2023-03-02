@@ -71,7 +71,7 @@
 				<key>autopaste</key>
 				<false/>
 				<key>clipboardtext</key>
-				<string>{var:site}/p/{query}</string>
+				<string>{query}</string>
 				<key>ignoredynamicplaceholders</key>
 				<false/>
 				<key>transient</key>
@@ -98,11 +98,32 @@ require "net/http"
 require "uri"
 require "json"
 
-site = ENV['site']
-uri = URI.parse(site + "/p.json")
+uri = URI.parse(ENV['site'] + "/p.json")
 
-r = Net::HTTP.post_form(uri, {"password[payload]" =&gt; "{query}"})
-print JSON.parse(r.body)["url_token"]</string>
+retrieval_step = "false"
+if ENV['retrieval_step'] == "1" then
+    retrieval_step = "true"
+end
+
+deletable_by_viewer = "true"
+if ENV['deletable_by_viewer'] == "0" then
+    deletable_by_viewer = "false"
+end 
+
+r = Net::HTTP.post_form(uri, {
+    "password[payload]" =&gt; "{query}", 
+    "password[expire_after_days]" =&gt; ENV['expire_after_days'],
+    "password[expire_after_views]" =&gt; ENV['expire_after_views'],
+    "password[retrieval_step]" =&gt; retrieval_step,
+    "password[deletable_by_viewer]" =&gt; deletable_by_viewer,
+})
+
+url = ENV['site'] + "/p/" + JSON.parse(r.body)["url_token"]
+
+if ENV['retrieval_step'] == "1" then
+	url += '/r'
+end
+print url</string>
 				<key>scriptargtype</key>
 				<integer>0</integer>
 				<key>scriptfile</key>
@@ -129,7 +150,7 @@ print JSON.parse(r.body)["url_token"]</string>
 				<key>spaces</key>
 				<string></string>
 				<key>url</key>
-				<string>{var:site}/p/{query}</string>
+				<string>{query}</string>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.openurl</string>
@@ -250,11 +271,91 @@ Idea for this by https://github.com/psteinweber</string>
 			<key>variable</key>
 			<string>site</string>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>7</string>
+				<key>placeholder</key>
+				<string></string>
+				<key>required</key>
+				<true/>
+				<key>trim</key>
+				<true/>
+			</dict>
+			<key>description</key>
+			<string></string>
+			<key>label</key>
+			<string>Expire after days</string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>expire_after_days</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>5</string>
+				<key>placeholder</key>
+				<string></string>
+				<key>required</key>
+				<false/>
+				<key>trim</key>
+				<true/>
+			</dict>
+			<key>description</key>
+			<string></string>
+			<key>label</key>
+			<string>Expire after views</string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>expire_after_views</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<false/>
+				<key>required</key>
+				<false/>
+				<key>text</key>
+				<string></string>
+			</dict>
+			<key>description</key>
+			<string>Helps to avoid chat systems and URL scanners from eating up views.</string>
+			<key>label</key>
+			<string>Use a 1-click retrieval step</string>
+			<key>type</key>
+			<string>checkbox</string>
+			<key>variable</key>
+			<string>retrieval_step</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<true/>
+				<key>required</key>
+				<false/>
+				<key>text</key>
+				<string></string>
+			</dict>
+			<key>description</key>
+			<string>Allow users to delete passwords once retrieved.</string>
+			<key>label</key>
+			<string>Allow immediate deletion</string>
+			<key>type</key>
+			<string>checkbox</string>
+			<key>variable</key>
+			<string>deletable_by_viewer</string>
+		</dict>
 	</array>
 	<key>variablesdontexport</key>
 	<array/>
 	<key>version</key>
-	<string>1.1</string>
+	<string>1.2</string>
 	<key>webaddress</key>
 	<string>https://pwpush.com</string>
 </dict>
