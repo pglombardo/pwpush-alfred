@@ -98,29 +98,29 @@ require "net/http"
 require "uri"
 require "json"
 
-uri = URI.parse(ENV['site'] + "/p.json")
+uri = URI.parse(ENV['PWP__OVERRIDE_BASE_URL'] + "/p.json")
 
 retrieval_step = "false"
-if ENV['retrieval_step'] == "1" then
+if ENV['PWP__PW__ENABLE_RETRIEVAL_STEP'] == "1" then
     retrieval_step = "true"
 end
 
 deletable_by_viewer = "true"
-if ENV['deletable_by_viewer'] == "0" then
+if ENV['PWP__PW__ENABLE_DELETABLE_PUSHES'] == "0" then
     deletable_by_viewer = "false"
 end 
 
 r = Net::HTTP.post_form(uri, {
     "password[payload]" =&gt; "{query}", 
-    "password[expire_after_days]" =&gt; ENV['expire_after_days'],
-    "password[expire_after_views]" =&gt; ENV['expire_after_views'],
+    "password[expire_after_days]" =&gt; ENV['PWP__PW__EXPIRE_AFTER_DAYS'],
+    "password[expire_after_views]" =&gt; ENV['PWP__PW__EXPIRE_AFTER_VIEWS'],
     "password[retrieval_step]" =&gt; retrieval_step,
     "password[deletable_by_viewer]" =&gt; deletable_by_viewer,
 })
 
-url = ENV['site'] + "/p/" + JSON.parse(r.body)["url_token"]
+url = ENV['PWP__OVERRIDE_BASE_URL'] + "/p/" + JSON.parse(r.body)["url_token"]
 
-if ENV['retrieval_step'] == "1" then
+if ENV['PWP__PW__ENABLE_RETRIEVAL_STEP'] == "1" then
 	url += '/r'
 end
 print url</string>
@@ -263,13 +263,13 @@ Idea for this by https://github.com/psteinweber</string>
 				<true/>
 			</dict>
 			<key>description</key>
-			<string></string>
+			<string>Set this value (without a trailing slash) to force the base URL of generated links.</string>
 			<key>label</key>
-			<string>Push Site</string>
+			<string>Base URL</string>
 			<key>type</key>
 			<string>textfield</string>
 			<key>variable</key>
-			<string>site</string>
+			<string>PWP__OVERRIDE_BASE_URL</string>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -290,7 +290,7 @@ Idea for this by https://github.com/psteinweber</string>
 			<key>type</key>
 			<string>textfield</string>
 			<key>variable</key>
-			<string>expire_after_days</string>
+			<string>PWP__PW__EXPIRE_AFTER_DAYS</string>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -311,7 +311,7 @@ Idea for this by https://github.com/psteinweber</string>
 			<key>type</key>
 			<string>textfield</string>
 			<key>variable</key>
-			<string>expire_after_views</string>
+			<string>PWP__PW__EXPIRE_AFTER_VIEWS</string>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -330,7 +330,7 @@ Idea for this by https://github.com/psteinweber</string>
 			<key>type</key>
 			<string>checkbox</string>
 			<key>variable</key>
-			<string>retrieval_step</string>
+			<string>PWP__PW__ENABLE_RETRIEVAL_STEP</string>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -349,7 +349,7 @@ Idea for this by https://github.com/psteinweber</string>
 			<key>type</key>
 			<string>checkbox</string>
 			<key>variable</key>
-			<string>deletable_by_viewer</string>
+			<string>PWP__PW__ENABLE_DELETABLE_PUSHES</string>
 		</dict>
 	</array>
 	<key>variablesdontexport</key>
