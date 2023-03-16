@@ -17,6 +17,8 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
 		<key>BF823619-F32E-47B5-871F-A94C9135795E</key>
@@ -28,6 +30,8 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 			<dict>
 				<key>destinationuid</key>
@@ -36,6 +40,8 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 			<dict>
 				<key>destinationuid</key>
@@ -44,6 +50,8 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
 	</dict>
@@ -63,33 +71,18 @@
 				<key>autopaste</key>
 				<false/>
 				<key>clipboardtext</key>
-				<string>https://pwpush.com/p/{query}</string>
+				<string>{query}</string>
+				<key>ignoredynamicplaceholders</key>
+				<false/>
+				<key>transient</key>
+				<false/>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.output.clipboard</string>
 			<key>uid</key>
 			<string>4DDDD1DD-960C-4FC7-A98F-BB256449CEC9</string>
 			<key>version</key>
-			<integer>0</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>concurrently</key>
-				<false/>
-				<key>escaping</key>
-				<integer>102</integer>
-				<key>script</key>
-				<string>open https://pwpush.com/p/{query}</string>
-				<key>type</key>
-				<integer>0</integer>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.output.script</string>
-			<key>uid</key>
-			<string>7172DED4-57FD-4204-8226-F833F718CD3D</string>
-			<key>version</key>
-			<integer>0</integer>
+			<integer>3</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -105,11 +98,36 @@ require "net/http"
 require "uri"
 require "json"
 
-uri = URI.parse("https://pwpush.com/p.json")
+uri = URI.parse(ENV['PWP__OVERRIDE_BASE_URL'] + "/p.json")
 
-r = Net::HTTP.post_form(uri, {"password[payload]" =&gt; "{query}"})
-puts JSON.parse(r.body)["url_token"]
-</string>
+retrieval_step = "false"
+if ENV['PWP__PW__ENABLE_RETRIEVAL_STEP'] == "1" then
+    retrieval_step = "true"
+end
+
+deletable_by_viewer = "true"
+if ENV['PWP__PW__ENABLE_DELETABLE_PUSHES'] == "0" then
+    deletable_by_viewer = "false"
+end 
+
+r = Net::HTTP.post_form(uri, {
+    "password[payload]" =&gt; "{query}", 
+    "password[expire_after_days]" =&gt; ENV['PWP__PW__EXPIRE_AFTER_DAYS'],
+    "password[expire_after_views]" =&gt; ENV['PWP__PW__EXPIRE_AFTER_VIEWS'],
+    "password[retrieval_step]" =&gt; retrieval_step,
+    "password[deletable_by_viewer]" =&gt; deletable_by_viewer,
+})
+
+url = ENV['PWP__OVERRIDE_BASE_URL'] + "/p/" + JSON.parse(r.body)["url_token"]
+
+if ENV['PWP__PW__ENABLE_RETRIEVAL_STEP'] == "1" then
+	url += '/r'
+end
+print url</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
 				<key>type</key>
 				<integer>2</integer>
 			</dict>
@@ -118,7 +136,28 @@ puts JSON.parse(r.body)["url_token"]
 			<key>uid</key>
 			<string>BF823619-F32E-47B5-871F-A94C9135795E</string>
 			<key>version</key>
-			<integer>0</integer>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>browser</key>
+				<string></string>
+				<key>skipqueryencode</key>
+				<false/>
+				<key>skipvarencode</key>
+				<false/>
+				<key>spaces</key>
+				<string></string>
+				<key>url</key>
+				<string>{query}</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.openurl</string>
+			<key>uid</key>
+			<string>7172DED4-57FD-4204-8226-F833F718CD3D</string>
+			<key>version</key>
+			<integer>1</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -139,7 +178,7 @@ puts JSON.parse(r.body)["url_token"]
 			<key>uid</key>
 			<string>04B2B610-68B7-4422-A68E-E160D2A3EEED</string>
 			<key>version</key>
-			<integer>0</integer>
+			<integer>1</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -148,11 +187,7 @@ puts JSON.parse(r.body)["url_token"]
 				<false/>
 				<key>onlyshowifquerypopulated</key>
 				<false/>
-				<key>output</key>
-				<integer>0</integer>
 				<key>removeextension</key>
-				<false/>
-				<key>sticky</key>
 				<false/>
 				<key>text</key>
 				<string>Link copied to clipboard.</string>
@@ -164,7 +199,7 @@ puts JSON.parse(r.body)["url_token"]
 			<key>uid</key>
 			<string>6426AAB0-099B-473A-9BEE-C2E5C29C36FF</string>
 			<key>version</key>
-			<integer>0</integer>
+			<integer>1</integer>
 		</dict>
 	</array>
 	<key>readme</key>
@@ -179,30 +214,148 @@ Idea for this by https://github.com/psteinweber</string>
 	<dict>
 		<key>04B2B610-68B7-4422-A68E-E160D2A3EEED</key>
 		<dict>
+			<key>xpos</key>
+			<real>300</real>
 			<key>ypos</key>
 			<real>210</real>
 		</dict>
 		<key>4DDDD1DD-960C-4FC7-A98F-BB256449CEC9</key>
 		<dict>
+			<key>xpos</key>
+			<real>700</real>
 			<key>ypos</key>
-			<real>10</real>
+			<real>15</real>
 		</dict>
 		<key>6426AAB0-099B-473A-9BEE-C2E5C29C36FF</key>
 		<dict>
+			<key>xpos</key>
+			<real>700</real>
 			<key>ypos</key>
 			<real>370</real>
 		</dict>
 		<key>7172DED4-57FD-4204-8226-F833F718CD3D</key>
 		<dict>
+			<key>xpos</key>
+			<real>700</real>
 			<key>ypos</key>
 			<real>210</real>
 		</dict>
 		<key>BF823619-F32E-47B5-871F-A94C9135795E</key>
 		<dict>
+			<key>xpos</key>
+			<real>500</real>
 			<key>ypos</key>
 			<real>210</real>
 		</dict>
 	</dict>
+	<key>userconfigurationconfig</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>https://pwpush.com</string>
+				<key>placeholder</key>
+				<string></string>
+				<key>required</key>
+				<true/>
+				<key>trim</key>
+				<true/>
+			</dict>
+			<key>description</key>
+			<string>Set this value (without a trailing slash) to force the base URL of generated links.</string>
+			<key>label</key>
+			<string>Base URL</string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>PWP__OVERRIDE_BASE_URL</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>7</string>
+				<key>placeholder</key>
+				<string></string>
+				<key>required</key>
+				<true/>
+				<key>trim</key>
+				<true/>
+			</dict>
+			<key>description</key>
+			<string></string>
+			<key>label</key>
+			<string>Expire after days</string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>PWP__PW__EXPIRE_AFTER_DAYS</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>5</string>
+				<key>placeholder</key>
+				<string></string>
+				<key>required</key>
+				<false/>
+				<key>trim</key>
+				<true/>
+			</dict>
+			<key>description</key>
+			<string></string>
+			<key>label</key>
+			<string>Expire after views</string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>PWP__PW__EXPIRE_AFTER_VIEWS</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<false/>
+				<key>required</key>
+				<false/>
+				<key>text</key>
+				<string></string>
+			</dict>
+			<key>description</key>
+			<string>Helps to avoid chat systems and URL scanners from eating up views.</string>
+			<key>label</key>
+			<string>Use a 1-click retrieval step</string>
+			<key>type</key>
+			<string>checkbox</string>
+			<key>variable</key>
+			<string>PWP__PW__ENABLE_RETRIEVAL_STEP</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<true/>
+				<key>required</key>
+				<false/>
+				<key>text</key>
+				<string></string>
+			</dict>
+			<key>description</key>
+			<string>Allow users to delete passwords once retrieved.</string>
+			<key>label</key>
+			<string>Allow immediate deletion</string>
+			<key>type</key>
+			<string>checkbox</string>
+			<key>variable</key>
+			<string>PWP__PW__ENABLE_DELETABLE_PUSHES</string>
+		</dict>
+	</array>
+	<key>variablesdontexport</key>
+	<array/>
+	<key>version</key>
+	<string>1.2</string>
 	<key>webaddress</key>
 	<string>https://pwpush.com</string>
 </dict>
