@@ -2,7 +2,7 @@
 
 An [Alfred](https://www.alfredapp.com) workflow to push passwords to [pwpush.com](https://pwpush.com/).
 
-![](https://disznc.s3.amazonaws.com/pwpush-alfred.png)
+![](https://pwpush.fra1.cdn.digitaloceanspaces.com/alfred/pwpush-alfred.png)
 
 # Commands
 
@@ -12,7 +12,7 @@ With this workflow you can:
 
 # Password Pusher
 
-![](https://disznc.s3.amazonaws.com/Screen-Shot-2021-07-04-at-9.04.09-PM.png)
+![](https://pwpush.fra1.cdn.digitaloceanspaces.com/alfred/Screen-Shot-2021-07-04-at-9.04.09-PM.png)
 
 [Password Pusher](https://github.com/pglombardo/PasswordPusher) is an application to communicate passwords over the web. Links to passwords expire after a certain number of views and/or time has passed.
 
